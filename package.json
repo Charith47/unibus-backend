@@ -1,0 +1,25 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "UNIBUS backend",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"serve": "nodemon ./src/index.js"
+	},
+	"keywords": [
+		"firebase",
+		"crud",
+		"api",
+		"node",
+		"express"
+	],
+	"author": "charith",
+	"license": "ISC",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"firebase": "^9.1.3"
+	}
+}
