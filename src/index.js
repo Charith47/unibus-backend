@@ -3,9 +3,10 @@ dotenv.config();
 
 import cors from 'cors';
 import express from 'express';
+import bodyParser from 'body-parser';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 // router imports
 import Transactions from './transactions/router.js';
@@ -16,11 +17,10 @@ app.use(
 	})
 );
 
-app.use(Transactions);
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-	res.send('Hello World');
-});
+// add routers to app
+app.use('/transactions',Transactions);
 
 app.listen(PORT, () => {
 	console.log(`App listening on port ${PORT}`);

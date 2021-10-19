@@ -13,5 +13,5 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
-export const Users = db.collection('users');
-export const Transactions = db.collection('transactions');
+export const UsersCollection = db.collection('users');
+export const TransactionsCollection = db.collection('transactions');
