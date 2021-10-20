@@ -31,9 +31,21 @@ const createTransaction = async (req, res) => {
 		const userSnapshot = await userRef.get();
 		const updatedWalletAmount = userSnapshot.get('walletAmount');
 
+		// create a new transaction
+		// uid, amount, total
+
+		const transactionRef = await TransactionsCollection.add({
+			userId: req.body.userId,
+			amount: amount,
+			type: req.body.type,
+			date: new Date(),
+			token: req.body.token,
+		});
+
 		res.status(200);
 		res.send({
 			updatedWalletAmount: updatedWalletAmount,
+			transactionId: transactionRef.id,
 		});
 	} catch (error) {
 		res.sendStatus(500);
