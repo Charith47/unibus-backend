@@ -38,7 +38,7 @@ const createTransaction = async (req, res) => {
 			userId: req.body.userId,
 			amount: amount,
 			type: req.body.type,
-			date: new Date(),
+			date: new Date().getTime(),
 			token: req.body.token,
 		});
 
@@ -53,6 +53,31 @@ const createTransaction = async (req, res) => {
 	}
 };
 
+const getLatestTransactions = async (req, res) => {
+	try {
+		const latestTransactions = await TransactionsCollection.where(
+			'userId',
+			'==',
+			req.body.userId
+		)
+			.orderBy('date', 'desc')
+			.limit(3)
+			.get();
+
+		res.send(
+			latestTransactions.docs.map((doc) => {
+				return {
+					transactionId: doc.id,
+					...doc.data(),
+				};
+			})
+		);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 router.post('/create', createTransaction);
+router.post('/latest', getLatestTransactions);
 
 export default router;
