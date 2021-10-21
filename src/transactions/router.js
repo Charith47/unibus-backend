@@ -64,14 +64,20 @@ const getLatestTransactions = async (req, res) => {
 			.limit(3)
 			.get();
 
-		res.send(
-			latestTransactions.docs.map((doc) => {
-				return {
-					transactionId: doc.id,
-					...doc.data(),
-				};
-			})
-		);
+		if (latestTransactions.docs.length != 0) {
+			res.status(200);
+			res.send(
+				latestTransactions.docs.map((doc) => {
+					return {
+						transactionId: doc.id,
+						...doc.data(),
+					};
+				})
+			);
+		} else {
+			res.status(200);
+			res.send([]);
+		}
 	} catch (error) {
 		console.log(error);
 	}
