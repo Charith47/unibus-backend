@@ -24,15 +24,16 @@ const createTransaction = async (req, res) => {
 		const amount = parseInt(req.body.amount);
 
 		const userRef = UsersCollection.doc(req.body.userId);
-		await userRef.update({
-			walletAmount: firebase.firestore.FieldValue.increment(amount),
-		});
 
-		const userSnapshot = await userRef.get();
-		const updatedWalletAmount = userSnapshot.get('walletAmount');
-
-		// create a new transaction
-		// uid, amount, total
+		if (req.body.type === 'credit') {
+			await userRef.update({
+				walletAmount: firebase.firestore.FieldValue.increment(amount),
+			});
+		} else if (req.body.type === 'debit') {
+			await userRef.update({
+				walletAmount: firebase.firestore.FieldValue.increment(-amount),
+			});
+		}
 
 		const transactionRef = await TransactionsCollection.add({
 			userId: req.body.userId,
@@ -41,6 +42,9 @@ const createTransaction = async (req, res) => {
 			date: new Date().getTime(),
 			token: req.body.token,
 		});
+
+		const userSnapshot = await userRef.get();
+		const updatedWalletAmount = userSnapshot.get('walletAmount');
 
 		res.status(200);
 		res.send({
@@ -79,11 +83,39 @@ const getLatestTransactions = async (req, res) => {
 			res.send([]);
 		}
 	} catch (error) {
+		res.sendStatus(500);
+		console.log(error);
+	}
+};
+
+const getAllTransactions = async (req, res) => {
+	try {
+		const allTransactions = await TransactionsCollection.where(
+			'userId',
+			'==',
+			req.body.userId
+		).get();
+		if (allTransactions.docs.length != 0) {
+			res.status(200);
+			res.send(
+				allTransactions.docs.map((doc) => {
+					return {
+						transactionId: doc.id,
+						...doc.data(),
+					};
+				})
+			);
+		} else {
+			res.status(200);
+			res.send([]);
+		}
+	} catch (error) {
+		res.sendStatus(500);
 		console.log(error);
 	}
 };
 
 router.post('/create', createTransaction);
 router.post('/latest', getLatestTransactions);
-
+router.post('/all', getAllTransactions);
 export default router;
