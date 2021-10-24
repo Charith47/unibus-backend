@@ -10,6 +10,7 @@ const PORT = process.env.PORT;
 
 // router imports
 import Transactions from './transactions/router.js';
+import Tickets from './tickets/router.js';
 
 app.use(
 	cors({
@@ -20,7 +21,8 @@ app.use(
 app.use(bodyParser.json());
 
 // add routers to app
-app.use('/transactions',Transactions);
+app.use('/transactions', Transactions);
+app.use('/tickets', Tickets);
 
 app.listen(PORT, () => {
 	console.log(`App listening on port ${PORT}`);
