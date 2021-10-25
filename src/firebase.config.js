@@ -16,3 +16,4 @@ export const db = firebase.firestore();
 export const UsersCollection = db.collection('users');
 export const TransactionsCollection = db.collection('transactions');
 export const RouteCollection = db.collection('routes')
+export const TicketCollection = db.collection('tickets')

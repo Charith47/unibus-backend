@@ -3,6 +3,7 @@ import {
 	UsersCollection,
 	TransactionsCollection,
 	RouteCollection,
+	TicketCollection,
 } from '../firebase.config.js';
 
 import firebase from 'firebase/compat/app';
@@ -14,7 +15,6 @@ const searchForTickets = async (req, res) => {
 	// we get two locations
 	// find matching routes by seeing both array contains
 	// calculate price by index gap
-	// this function is shit; fml
 
 	const start = String.prototype.toLowerCase.apply(req.body.start);
 	const destination = String.prototype.toLowerCase.apply(req.body.destination);
@@ -44,6 +44,8 @@ const searchForTickets = async (req, res) => {
 		const ans = {
 			...filteredRoutes[i],
 			price: prices[i],
+			start: start,
+			destination: destination,
 		};
 		result.push(ans);
 	}
@@ -52,15 +54,59 @@ const searchForTickets = async (req, res) => {
 };
 
 const buyTicket = async (req, res) => {
-	// new ticket in user db
-	// how price? get from search
-	// new transaction then ?
+	try {
+		const ticketRef = await TicketCollection.add({
+			userId: req.body.userId,
+			start: req.body.start,
+			destination: req.body.destination,
+			date: new Date().getTime(),
+			expirationDate: null,
+			route: req.body.route,
+			price: req.body.price,
+			type: req.body.type,
+		});
+		res.status(200);
+		res.send({
+			price: req.body.price,
+		});
+	} catch (error) {
+		res.sendStatus(500);
+	}
 };
 
 const useTicket = async (req, res) => {
-	// delete ticket from db
+	// delete ticket from db // by ticket id
 	// but create a new ride
 };
 
+const getAllTickets = async (req, res) => {
+	try {
+		const allTickets = await TicketCollection.where(
+			'userId',
+			'==',
+			req.body.userId
+		).get();
+		if (allTickets.docs.length != 0) {
+			res.status(200);
+			res.send(
+				allTickets.docs.map((doc) => {
+					return {
+						ticketId: doc.id,
+						...doc.data(),
+					};
+				})
+			);
+		} else {
+			res.status(200), res.send([]);
+		}
+	} catch (error) {
+		res.sendStatus(500), console.log(error);
+	}
+};
+
 router.post('/search', searchForTickets);
+router.post('/buy', buyTicket);
+router.post('/use', useTicket);
+router.post('/all', getAllTickets);
+
 export default router;
