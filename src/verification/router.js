@@ -35,7 +35,7 @@ const verifyTicket = async (req, res) => {
 			res.sendStatus(400);
 		}
 	} catch (error) {
-		res.send(500);
+		res.sendStatus(500);
 		return;
 	}
 };
