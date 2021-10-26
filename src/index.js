@@ -11,6 +11,7 @@ const PORT = process.env.PORT;
 // router imports
 import Transactions from './transactions/router.js';
 import Tickets from './tickets/router.js';
+import Verification from './verification/router.js';
 
 app.use(
 	cors({
@@ -23,7 +24,7 @@ app.use(bodyParser.json());
 // add routers to app
 app.use('/transactions', Transactions);
 app.use('/tickets', Tickets);
-
+app.use('/qr', Verification);
 app.listen(PORT, () => {
 	console.log(`App listening on port ${PORT}`);
 });

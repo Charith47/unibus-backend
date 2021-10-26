@@ -31,10 +31,18 @@ const searchForTickets = async (req, res) => {
 	});
 
 	const prices = filteredRoutes.map((route) => {
+
+		let multiplier = 0;
+		if (route.type === 'short-distance') {
+			multiplier = 9;
+		} else if (route.type === 'long-distance') {
+			multiplier = 25;
+		}
+
 		const startIndex = route.stops.indexOf(start);
 		const destinationIndex = route.stops.indexOf(destination);
 
-		const price = Math.abs(startIndex - destinationIndex) * 10;
+		const price = Math.abs(startIndex - destinationIndex) * multiplier;
 		return price;
 	});
 
@@ -76,6 +84,7 @@ const buyTicket = async (req, res) => {
 const useTicket = async (req, res) => {
 	// delete ticket from db // by ticket id
 	// but create a new ride
+	// useless?
 	TicketCollection.doc(req.body.ticketId)
 		.delete()
 		.then(() => {
@@ -104,7 +113,7 @@ const getLatestTickets = async (req, res) => {
 			res.send(
 				latestTickets.docs.map((doc) => {
 					return {
-						transactionId: doc.id,
+						ticketId: doc.id,
 						...doc.data(),
 					};
 				})
@@ -137,10 +146,12 @@ const getAllTickets = async (req, res) => {
 				})
 			);
 		} else {
-			res.status(200), res.send([]);
+			res.status(200);
+			res.send([]);
 		}
 	} catch (error) {
-		res.sendStatus(500), console.log(error);
+		res.sendStatus(500);
+		console.log(error);
 	}
 };
 
