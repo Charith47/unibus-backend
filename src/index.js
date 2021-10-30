@@ -22,9 +22,14 @@ app.use(
 app.use(bodyParser.json());
 
 // add routers to app
-app.use('/transactions', Transactions);
-app.use('/tickets', Tickets);
-app.use('/qr', Verification);
+app.use('/api/transactions', Transactions);
+app.use('/api/tickets', Tickets);
+app.use('/api/qr', Verification);
+
+app.get('/api/', function (req, res) {
+	res.send('<h1>Welcome to UNIBUS!</h1>');
+});
+
 app.listen(PORT, () => {
 	console.log(`App listening on port ${PORT}`);
 });

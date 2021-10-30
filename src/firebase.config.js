@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore'
+import 'firebase/compat/firestore';
 
 const firebaseConfig = {
-	apiKey: 'AIzaSyDFSPET4XyxSkqDarFqq0lW6eLD2vxJHGI',
+	apiKey: process.env.FIREBASE_API_KEY,
 	authDomain: 'unibus-passenger.firebaseapp.com',
 	projectId: 'unibus-passenger',
 	storageBucket: 'unibus-passenger.appspot.com',
@@ -15,5 +18,5 @@ firebase.initializeApp(firebaseConfig);
 export const db = firebase.firestore();
 export const UsersCollection = db.collection('users');
 export const TransactionsCollection = db.collection('transactions');
-export const RouteCollection = db.collection('routes')
-export const TicketCollection = db.collection('tickets')
+export const RouteCollection = db.collection('routes');
+export const TicketCollection = db.collection('tickets');
